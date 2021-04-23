@@ -1,0 +1,10 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/mikberg/irrigation
+gazelle(name = "gazelle")
+
+# update the running process on the pi
+alias(
+    name = "update",
+    actual = "//scripts:updatepi",
+)

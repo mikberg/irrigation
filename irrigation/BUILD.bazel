@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "irrigation_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/mikberg/irrigation/irrigation",
+    visibility = ["//visibility:private"],
+    deps = ["//irrigation/cmd"],
+)
+
+go_binary(
+    name = "irrigation",
+    embed = [":irrigation_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "irrigation-raspberrypi",
+    embed = [":irrigation_lib"],
+    goarch = "arm",
+    goos = "linux",
+    visibility = ["//visibility:public"],
+)

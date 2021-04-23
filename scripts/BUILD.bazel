@@ -1,0 +1,13 @@
+sh_binary(
+    name = "updatepi",
+    srcs = [
+        "updatepi.sh",
+    ],
+    data = [
+        "//irrigation:irrigation-raspberrypi",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@bazel_tools//tools/bash/runfiles",
+    ],
+)
