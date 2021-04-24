@@ -10,6 +10,8 @@ go_library(
     importpath = "github.com/mikberg/irrigation/irrigation/cmd",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/hack",
+        "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",
         "@com_github_mitchellh_go_homedir//:go-homedir",
         "@com_github_rs_zerolog//log",
         "@com_github_spf13_cobra//:cobra",
