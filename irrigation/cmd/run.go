@@ -7,6 +7,7 @@ import (
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/mikberg/irrigation/pkg/hack"
+	"github.com/mikberg/irrigation/pkg/yr"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -17,6 +18,18 @@ var runCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 		log.Info().Msg("starting server")
+
+		yrClient := yr.NewClient()
+		forecast, err := yrClient.Nowcast(59.9084295, 10.7785315, 0.0)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to query")
+		}
+		instant, err := forecast.GetInstant()
+		if err != nil {
+			log.Error().Err(err).Msg("no instant data")
+		}
+		fmt.Println(instant.Time)
+		fmt.Println(instant.Data.Instant.Details)
 
 		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
@@ -29,7 +42,7 @@ var runCmd = &cobra.Command{
 			}
 		}()
 
-		influxClient := influxdb2.NewClient("http://localhost:8086", "irrigation:?????")
+		influxClient := influxdb2.NewClient("http://localhost:8086", "irrigation:bluppface")
 
 		go func() {
 			if err := hack.LogTemperatures(ctx, influxClient); err != nil {

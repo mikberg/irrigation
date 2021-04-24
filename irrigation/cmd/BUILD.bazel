@@ -11,6 +11,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/hack",
+        "//pkg/yr",
         "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",
         "@com_github_mitchellh_go_homedir//:go-homedir",
         "@com_github_rs_zerolog//log",

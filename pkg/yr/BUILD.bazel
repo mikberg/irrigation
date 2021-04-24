@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "yr",
+    srcs = [
+        "client.go",
+        "models.go",
+        "yr.go",
+    ],
+    importpath = "github.com/mikberg/irrigation/pkg/yr",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "yr_test",
+    srcs = ["models_test.go"],
+    data = glob(["testdata/**"]),
+    embed = [":yr"],
+    deps = [
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

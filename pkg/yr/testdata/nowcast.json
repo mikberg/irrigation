@@ -1,0 +1,271 @@
+{
+    "properties": {
+        "timeseries": [
+            {
+                "time": "2021-04-24T16:25:00Z",
+                "data": {
+                    "next_1_hours": {
+                        "details": {
+                            "precipitation_amount": 0
+                        },
+                        "summary": {
+                            "symbol_code": "partlycloudy_day"
+                        }
+                    },
+                    "instant": {
+                        "details": {
+                            "wind_speed": 7,
+                            "air_temperature": 8.8,
+                            "wind_from_direction": -1.5,
+                            "relative_humidity": 24.9,
+                            "precipitation_rate": 0,
+                            "wind_speed_of_gust": 11.6
+                        }
+                    }
+                }
+            },
+            {
+                "time": "2021-04-24T16:30:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T16:35:00Z"
+            },
+            {
+                "time": "2021-04-24T16:40:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T16:45:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T16:50:00Z"
+            },
+            {
+                "time": "2021-04-24T16:55:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            },
+            {
+                "time": "2021-04-24T17:00:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:05:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:10:00Z"
+            },
+            {
+                "time": "2021-04-24T17:15:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:20:00Z"
+            },
+            {
+                "time": "2021-04-24T17:25:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:30:00Z"
+            },
+            {
+                "time": "2021-04-24T17:35:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0.1
+                        }
+                    }
+                }
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:40:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:45:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:50:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T17:55:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T18:00:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T18:05:00Z"
+            },
+            {
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                },
+                "time": "2021-04-24T18:10:00Z"
+            },
+            {
+                "time": "2021-04-24T18:15:00Z",
+                "data": {
+                    "instant": {
+                        "details": {
+                            "precipitation_rate": 0
+                        }
+                    }
+                }
+            }
+        ],
+        "meta": {
+            "units": {
+                "precipitation_amount": "mm",
+                "relative_humidity": "%",
+                "precipitation_rate": "mm/h",
+                "wind_speed_of_gust": "m/s",
+                "wind_speed": "m/s",
+                "air_temperature": "celsius",
+                "wind_from_direction": "degrees"
+            },
+            "radar_coverage": "ok",
+            "updated_at": "2021-04-24T16:22:34Z"
+        }
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            10.7785,
+            59.9084,
+            27
+        ]
+    },
+    "type": "Feature"
+}
