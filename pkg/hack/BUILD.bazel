@@ -5,10 +5,12 @@ go_library(
     srcs = [
         "hack.go",
         "temperature.go",
+        "weather.go",
     ],
     importpath = "github.com/mikberg/irrigation/pkg/hack",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/yr",
         "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",
         "@com_github_rs_zerolog//log",
     ],

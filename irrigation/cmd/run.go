@@ -43,10 +43,16 @@ var runCmd = &cobra.Command{
 		}()
 
 		influxClient := influxdb2.NewClient("http://localhost:8086", "irrigation:bluppface")
-
+		defer influxClient.Close()
 		go func() {
 			if err := hack.LogTemperatures(ctx, influxClient); err != nil {
 				log.Error().Err(err).Msg("error logging temperatures")
+			}
+		}()
+
+		go func() {
+			if err := hack.LogNowcasts(ctx, influxClient, yrClient); err != nil {
+				log.Error().Err(err).Msg("error logging nowcast")
 			}
 		}()
 

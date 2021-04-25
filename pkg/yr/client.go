@@ -36,11 +36,6 @@ func NewClient() Client {
 func (c *client) Nowcast(lat, lon, alt float64) (METJSONForecast, error) {
 	forecast := METJSONForecast{}
 
-	// u, err := url.Parse(nowcastURL)
-	// if err != nil {
-	// 	return forecast, fmt.Errorf("failed to parse URL: %w", err)
-	// }
-
 	values := url.Values{}
 	values.Add("lat", fmt.Sprintf("%f", lat))
 	values.Add("lon", fmt.Sprintf("%f", lon))
