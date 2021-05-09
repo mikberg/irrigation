@@ -16,7 +16,7 @@ import (
 func LogTemperatures(ctx context.Context, client influxdb2.Client) error {
 	writeAPI := client.WriteAPIBlocking("", "irrigation")
 
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(60 * time.Second)
 	defer ticker.Stop()
 	for {
 		select {

@@ -296,6 +296,13 @@ def go_dependencies():
         version = "v1.4.2",
     )
     go_repository(
+        name = "com_github_gregjones_httpcache",
+        importpath = "github.com/gregjones/httpcache",
+        sum = "h1:+ngKgrYPPJrOjhax5N+uePQ0Fh1Z7PheYoUI/0nzkPA=",
+        version = "v0.0.0-20190611155906-901d90724c79",
+    )
+
+    go_repository(
         name = "com_github_grpc_ecosystem_go_grpc_middleware",
         importpath = "github.com/grpc-ecosystem/go-grpc-middleware",
         sum = "h1:Iju5GlWwrvL6UBg4zJJt3btmonfrMlCDdsejg4CZE7c=",
@@ -813,8 +820,8 @@ def go_dependencies():
     go_repository(
         name = "com_github_stretchr_testify",
         importpath = "github.com/stretchr/testify",
-        sum = "h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H4=",
-        version = "v1.5.1",
+        sum = "h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=",
+        version = "v1.7.0",
     )
     go_repository(
         name = "com_github_subosito_gotenv",
@@ -932,6 +939,13 @@ def go_dependencies():
         sum = "h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=",
         version = "v2.4.0",
     )
+    go_repository(
+        name = "in_gopkg_yaml_v3",
+        importpath = "gopkg.in/yaml.v3",
+        sum = "h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=",
+        version = "v3.0.0-20200313102051-9f266ea9e77c",
+    )
+
     go_repository(
         name = "io_etcd_go_bbolt",
         importpath = "go.etcd.io/bbolt",

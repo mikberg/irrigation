@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
-	"github.com/mikberg/irrigation/pkg/hack"
+	"github.com/mikberg/irrigation/pkg/sensing"
 	"github.com/mikberg/irrigation/pkg/yr"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -18,18 +18,6 @@ var runCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 		log.Info().Msg("starting server")
-
-		yrClient := yr.NewClient()
-		forecast, err := yrClient.Nowcast(59.9084295, 10.7785315, 0.0)
-		if err != nil {
-			log.Error().Err(err).Msg("failed to query")
-		}
-		instant, err := forecast.GetInstant()
-		if err != nil {
-			log.Error().Err(err).Msg("no instant data")
-		}
-		fmt.Println(instant.Time)
-		fmt.Println(instant.Data.Instant.Details)
 
 		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
@@ -44,15 +32,44 @@ var runCmd = &cobra.Command{
 
 		influxClient := influxdb2.NewClient("http://localhost:8086", "irrigation:bluppface")
 		defer influxClient.Close()
+		writeAPI := influxClient.WriteAPIBlocking("", "irrigation")
+
+		// Sensors
+		yrClient := yr.NewClient()
+		yrSensor := sensing.NewYrNowcastSensor(yrClient, 59.9084, 10.7785, 0.0)
+
+		// @TODO: ugly
 		go func() {
-			if err := hack.LogTemperatures(ctx, influxClient); err != nil {
-				log.Error().Err(err).Msg("error logging temperatures")
+			if yrdatac, errc, err := yrSensor.Start(ctx); err == nil {
+				go func() {
+					for {
+						select {
+						case err := <-errc:
+							log.Error().Err(err).Msg("error from weather sensor")
+						case point := <-yrdatac:
+							writeAPI.WritePoint(ctx, point)
+						}
+					}
+
+				}()
+			} else {
+				log.Fatal().Err(err).Msg("failed to start yr sensor")
 			}
 		}()
 
+		piTempSensor := sensing.NewPiTemperatureSensor()
 		go func() {
-			if err := hack.LogNowcasts(ctx, influxClient, yrClient); err != nil {
-				log.Error().Err(err).Msg("error logging nowcast")
+			if datac, errc, err := piTempSensor.Start(ctx); err == nil {
+				go func() {
+					for {
+						select {
+						case err := <-errc:
+							log.Error().Err(err).Msg("error from pi sensor")
+						case point := <-datac:
+							writeAPI.WritePoint(ctx, point)
+						}
+					}
+				}()
 			}
 		}()
 

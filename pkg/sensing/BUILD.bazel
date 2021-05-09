@@ -1,15 +1,18 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "hack",
+    name = "sensing",
     srcs = [
-        "hack.go",
-        "temperature.go",
+        "pi.go",
+        "sensor.go",
+        "yr.go",
     ],
-    importpath = "github.com/mikberg/irrigation/pkg/hack",
+    importpath = "github.com/mikberg/irrigation/pkg/sensing",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/yr",
         "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",
+        "@com_github_influxdata_influxdb_client_go_v2//api/write",
         "@com_github_rs_zerolog//log",
     ],
 )

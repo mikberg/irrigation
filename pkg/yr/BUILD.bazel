@@ -9,11 +9,18 @@ go_library(
     ],
     importpath = "github.com/mikberg/irrigation/pkg/yr",
     visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gregjones_httpcache//:httpcache",
+        "@com_github_rs_zerolog//log",
+    ],
 )
 
 go_test(
     name = "yr_test",
-    srcs = ["models_test.go"],
+    srcs = [
+        "client_test.go",
+        "models_test.go",
+    ],
     data = glob(["testdata/**"]),
     embed = [":yr"],
     deps = [
