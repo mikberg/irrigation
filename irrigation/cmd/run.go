@@ -19,6 +19,10 @@ var runCmd = &cobra.Command{
 		ctx := context.Background()
 		log.Info().Msg("starting server")
 
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Let's irrigate!"))
+		})
 		http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("hey??"))

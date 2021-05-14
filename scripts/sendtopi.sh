@@ -17,11 +17,6 @@ BINARY=$(rlocation irrigation/irrigation/irrigation-raspberrypi_/irrigation-rasp
 
 SSH_COMBO="$USER@$PI"
 
-# remove the file
-ssh "$SSH_COMBO" 'rm -f /tmp/irrigation'
-
 # copy the file
-scp "$BINARY" "$SSH_COMBO:/tmp/irrigation"
-
-# restart server
-ssh "$SSH_COMBO" 'sudo supervisorctl stop irrigation && sudo mv /tmp/irrigation /bin/irrigation && sudo supervisorctl start irrigation'
+ssh "$SSH_COMBO" 'rm -f /home/$USER/irrigation-raspberrypi'
+scp "$BINARY" "$SSH_COMBO:/home/$USER"

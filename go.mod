@@ -9,5 +9,6 @@ require (
 	github.com/rs/zerolog v1.21.0
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
+	github.com/stianeikeland/go-rpio/v4 v4.4.1-0.20200705092735-acc952dac3eb
 	github.com/stretchr/testify v1.7.0
 )

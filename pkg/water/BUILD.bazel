@@ -1,0 +1,9 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "water",
+    srcs = ["water.go"],
+    importpath = "github.com/mikberg/irrigation/pkg/water",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_stianeikeland_go_rpio_v4//:go-rpio"],
+)

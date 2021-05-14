@@ -30,6 +30,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.irrigation.yaml)")
 
 	rootCmd.AddCommand(runCmd)
+	rootCmd.AddCommand(testCmd)
 }
 
 func initConfig() {

@@ -812,6 +812,13 @@ def go_dependencies():
         version = "v1.7.1",
     )
     go_repository(
+        name = "com_github_stianeikeland_go_rpio_v4",
+        importpath = "github.com/stianeikeland/go-rpio/v4",
+        sum = "h1:PEE7V1C+aJ688wa7SXGj1ZGEo5QctQQYHSpeoYc1CfM=",
+        version = "v4.4.1-0.20200705092735-acc952dac3eb",
+    )
+
+    go_repository(
         name = "com_github_stretchr_objx",
         importpath = "github.com/stretchr/objx",
         sum = "h1:2vfRuCMp5sSVIDSqO8oNnWJq7mPa6KVP3iPIwFBuy8A=",
