@@ -1,4 +1,5 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin", "nodejs_test")
 load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
 
@@ -61,6 +62,13 @@ react_scripts(
     output_dir = True,
 )
 
+pkg_tar(
+    name = "client",
+    srcs = ["//client:build"],
+    strip_prefix = "/client/build",
+    visibility = ["//visibility:public"],
+)
+
 nodejs_test(
     name = "build_smoke_test",
     data = [
@@ -110,6 +118,6 @@ react_scripts(
         # This tag instructs ibazel to pipe into stdin a event describing actions.
         # ibazel send EOF to stdin by default and `react-scripts start` will stop when getting EOF in stdin.
         # So use this to prevent EOF.
-        "ibazel_notify_changes",
+        # "ibazel_notify_changes",
     ],
 )

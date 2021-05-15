@@ -17,3 +17,14 @@ sh_binary(
         "@bazel_tools//tools/bash/runfiles",
     ],
 )
+
+sh_binary(
+    name = "deployclient",
+    srcs = ["deployclient.sh"],
+    args = ["$(execpath //client:client.tar)"],
+    data = ["//client:client.tar"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@bazel_tools//tools/bash/runfiles",
+    ],
+)

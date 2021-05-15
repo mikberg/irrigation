@@ -13,3 +13,8 @@ alias(
     name = "sendtopi",
     actual = "//scripts:sendtopi",
 )
+
+alias(
+    name = "deployclient",
+    actual = "//scripts:deployclient",
+)
