@@ -49,3 +49,19 @@ yarn_install(
     package_json = "//:package.json",
     yarn_lock = "//:yarn.lock",
 )
+
+load("@npm//@bazel/protractor:package.bzl", "npm_bazel_protractor_dependencies")
+
+npm_bazel_protractor_dependencies()
+
+# Setup the rules_webtesting toolchain
+load("@io_bazel_rules_webtesting//web:repositories.bzl", "web_test_repositories")
+
+web_test_repositories()
+
+load("@io_bazel_rules_webtesting//web/versioned:browsers-0.3.2.bzl", "browser_repositories")
+
+browser_repositories(
+    chromium = True,
+    firefox = True,
+)
