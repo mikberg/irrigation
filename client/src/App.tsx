@@ -1,20 +1,22 @@
-import { AppBar, Container, CssBaseline, Grid, IconButton, Paper, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Button, Card, CardContent, Container, CssBaseline, Grid, Toolbar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
-  appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   }
 }));
-
 
 function App() {
   const classes = useStyles();
@@ -24,23 +26,21 @@ function App() {
       <CssBaseline />
       <AppBar position="absolute">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="open drawer">
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap>
+          <Typography component="h1" variant="h6" noWrap>
             Irrigation
           </Typography>
         </Toolbar>
       </AppBar>
-
       <main className={classes.content}>
-        <div className={classes.appBarSpacer}></div>
-        <Container maxWidth="lg">
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={9}>
-              <Paper>
-                <p>Hello from paper</p>
-              </Paper>
+              <Card>
+                <CardContent>
+                  <Button variant="contained" color="secondary">Hello from App!!</Button>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
         </Container>
