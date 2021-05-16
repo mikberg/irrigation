@@ -1,3 +1,4 @@
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
 load("@npm//webpack-cli:index.bzl", webpack = "webpack_cli")
 load("@npm//http-server:index.bzl", "http_server")
@@ -8,10 +9,8 @@ ts_project(
     root_dir = "src",
     # supports_workers = True,
     deps = [
-        # "@npm//:node_modules",
-        # "@npm//@types",
-        # "@npm//@types/react",
-        "@npm//@types/react-dom",
+        "@npm//@material-ui/core",
+        "@npm//@types",
     ],
 )
 
@@ -22,6 +21,8 @@ webpack(
         "./$(execpath build/index.js)",
         "--config",
         "$(execpath webpack.config.js)",
+        "--mode",
+        "production",
         "-o",
         "$@",
     ],
@@ -40,4 +41,13 @@ http_server(
         ":bundle",
     ],
     templated_args = ["client"],
+)
+
+pkg_tar(
+    name = "client",
+    srcs = [
+        "index.html",
+        ":bundle",
+    ],
+    visibility = ["//visibility:public"],
 )
