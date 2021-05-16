@@ -1,53 +1,76 @@
-load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+load("@npm//@bazel/esbuild:index.bzl", "esbuild")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
-load("@npm//webpack-cli:index.bzl", webpack = "webpack_cli")
 load("@npm//http-server:index.bzl", "http_server")
+load("@npm//live-server:index.bzl", "live_server")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 
 ts_project(
+    name = "lib",
     srcs = glob(["src/*.tsx"]),
-    out_dir = "build",
-    root_dir = "src",
     # supports_workers = True,
+    tsconfig = ":tsconfig.json",
     deps = [
         "@npm//@material-ui/core",
-        "@npm//@types",
+        "@npm//@types/react",
+        "@npm//@types/react-dom",
+        "@npm//csstype",
+        "@npm//react",
+        "@npm//react-dom",
     ],
 )
 
-webpack(
-    name = "webpack",
-    outs = ["bundle"],
-    args = [
-        "./$(execpath build/index.js)",
-        "--config",
-        "$(execpath webpack.config.js)",
-        "--mode",
-        "production",
-        "-o",
-        "$@",
+esbuild(
+    name = "bundle",
+    define = [
+        "process.env.NODE_ENV=\"development\"",
     ],
-    data = [
-        "build/index.js",
-        "webpack.config.js",
-        ":tsconfig",
-        "@npm//:node_modules",
+    entry_point = "src/index.tsx",
+    platform = "node",
+    tool = select({
+        "@bazel_tools//src/conditions:darwin": "@esbuild_darwin//:bin/esbuild",
+        "@bazel_tools//src/conditions:windows": "@esbuild_windows//:esbuild.exe",
+        "@bazel_tools//src/conditions:linux_x86_64": "@esbuild_linux//:bin/esbuild",
+    }),
+    deps = [
+        ":lib",
     ],
-)
-
-http_server(
-    name = "server",
-    data = [
-        "index.html",
-        ":bundle",
-    ],
-    templated_args = ["client"],
 )
 
 pkg_tar(
     name = "client",
     srcs = [
+        "bundle.js",
         "index.html",
-        ":bundle",
     ],
     visibility = ["//visibility:public"],
+)
+
+http_server(
+    name = "server",
+    data = [
+        "bundle.js",
+        "bundle.js.map",
+        "index.html",
+    ],
+    tags = [
+        "ibazel_notify_changes",
+    ],
+    templated_args = ["client"],
+)
+
+live_server(
+    name = "devserver",
+    data = [
+        "bundle.js",
+        "bundle.js.map",
+        "index.html",
+    ],
+    tags = [
+        "ibazel_notify_changes",
+    ],
+    templated_args = [
+        "--no-browser",
+        "--verbose",
+        "client",
+    ],
 )
