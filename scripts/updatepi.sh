@@ -12,7 +12,7 @@ source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/
 # --- end runfiles.bash initialization v2 ---
 
 USER="$(whoami)"
-PI="192.168.0.169"
+PI="192.168.0.170"
 BINARY=$(rlocation irrigation/irrigation/irrigation-raspberrypi_/irrigation-raspberrypi)
 
 SSH_COMBO="$USER@$PI"
