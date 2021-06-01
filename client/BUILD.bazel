@@ -1,76 +1,54 @@
-load("@npm//@bazel/esbuild:index.bzl", "esbuild")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@npm//vite:index.bzl", "vite")
 load("@npm//@bazel/typescript:index.bzl", "ts_project")
-load("@npm//http-server:index.bzl", "http_server")
-load("@npm//live-server:index.bzl", "live_server")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+load("//client:vite.bzl", "vite_project")
 
+write_file(
+    name = "chdir",
+    out = "chdir.js",
+    content = ["process.chdir(require('path').join(process.env.BUILD_WORKSPACE_DIRECTORY, '" + package_name() + "'));"],
+)
+
+# Run Vite from the source directory
+vite(
+    name = "dev",
+    args = [
+        "--node_options=--require=./$(rootpath :chdir)",
+    ],
+    data = [":chdir"],
+)
+
+# ts_project only for validation
 ts_project(
-    name = "lib",
-    srcs = glob(["src/*.tsx"]),
-    # supports_workers = True,
-    tsconfig = ":tsconfig.json",
+    name = "ts",
+    srcs = glob(["src/*"]),
+    tsconfig = "tsconfig.json",
     deps = [
-        "@npm//@material-ui/core",
         "@npm//@types/react",
         "@npm//@types/react-dom",
-        "@npm//csstype",
+        "@npm//vite",
+    ],
+)
+
+vite_project(
+    name = "dist",
+    srcs = glob(["src/*"]) + [
+        "tsconfig.json",
+        "vite.config.ts",
+    ],
+    index_html = "index.html",
+    deps = [
+        "@npm//@vitejs/plugin-react-refresh",
         "@npm//react",
         "@npm//react-dom",
     ],
 )
 
-esbuild(
-    name = "bundle",
-    define = [
-        "process.env.NODE_ENV=\"development\"",
-    ],
-    entry_point = "src/index.tsx",
-    platform = "node",
-    tool = select({
-        "@bazel_tools//src/conditions:darwin": "@esbuild_darwin//:bin/esbuild",
-        "@bazel_tools//src/conditions:windows": "@esbuild_windows//:esbuild.exe",
-        "@bazel_tools//src/conditions:linux_x86_64": "@esbuild_linux//:bin/esbuild",
-    }),
-    deps = [
-        ":lib",
-    ],
-)
-
 pkg_tar(
     name = "client",
-    srcs = [
-        "bundle.js",
-        "index.html",
-    ],
+    srcs = [":dist"],
+    extension = "tar",
+    strip_prefix = "./dist",
     visibility = ["//visibility:public"],
-)
-
-http_server(
-    name = "server",
-    data = [
-        "bundle.js",
-        "bundle.js.map",
-        "index.html",
-    ],
-    tags = [
-        "ibazel_notify_changes",
-    ],
-    templated_args = ["client"],
-)
-
-live_server(
-    name = "devserver",
-    data = [
-        "bundle.js",
-        "bundle.js.map",
-        "index.html",
-    ],
-    tags = [
-        "ibazel_notify_changes",
-    ],
-    templated_args = [
-        "--no-browser",
-        "--verbose",
-        "client",
-    ],
 )

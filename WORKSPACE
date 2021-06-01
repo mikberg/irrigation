@@ -37,6 +37,17 @@ go_register_toolchains(version = "1.16")
 gazelle_dependencies()
 
 http_archive(
+    name = "com_google_protobuf",
+    sha256 = "9748c0d90e54ea09e5e75fb7fac16edce15d2028d4356f32211cfa3c0e956564",
+    strip_prefix = "protobuf-3.11.4",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.11.4.zip"],
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+http_archive(
     name = "build_bazel_rules_nodejs",
     sha256 = "10f534e1c80f795cffe1f2822becd4897754d18564612510c59b3c73544ae7c6",
     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.5.0/rules_nodejs-3.5.0.tar.gz"],
@@ -50,34 +61,6 @@ yarn_install(
     yarn_lock = "//:yarn.lock",
 )
 
-_ESBUILD_VERSION = "0.11.14"  # reminder: update SHAs below when changing this value
+load("@npm//@bazel/labs:package.bzl", "npm_bazel_labs_dependencies")
 
-http_archive(
-    name = "esbuild_darwin",
-    build_file_content = """exports_files(["bin/esbuild"])""",
-    sha256 = "81c8623c4c03a1fc449c37a90dd630025e334d312420d42106a899f78bd5e3fe",
-    strip_prefix = "package",
-    urls = [
-        "https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-%s.tgz" % _ESBUILD_VERSION,
-    ],
-)
-
-http_archive(
-    name = "esbuild_windows",
-    build_file_content = """exports_files(["esbuild.exe"])""",
-    sha256 = "d977751550550099cb9deb95d3fc436c21374b3875131589dde162dfb1c03bf4",
-    strip_prefix = "package",
-    urls = [
-        "https://registry.npmjs.org/esbuild-windows-64/-/esbuild-windows-64-%s.tgz" % _ESBUILD_VERSION,
-    ],
-)
-
-http_archive(
-    name = "esbuild_linux",
-    build_file_content = """exports_files(["bin/esbuild"])""",
-    sha256 = "fbf8d42fbd12d2392893a5d8cea3860e875c47ee715660e844dff822b8747321",
-    strip_prefix = "package",
-    urls = [
-        "https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-64-%s.tgz" % _ESBUILD_VERSION,
-    ],
-)
+npm_bazel_labs_dependencies()

@@ -1,52 +1,45 @@
-import { AppBar, Button, Card, CardContent, Container, CssBaseline, Grid, Toolbar, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  }
-}));
+import React, { useState } from 'react'
+import './App.css'
+import logo from './logo.svg'
 
 function App() {
-  const classes = useStyles();
+  const [count, setCount] = useState(0)
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute">
-        <Toolbar>
-          <Typography component="h1" variant="h6" noWrap>
-            Irrigation
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={9}>
-              <Card>
-                <CardContent>
-                  <Button variant="contained" color="secondary">Hello from App!!</Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-      </main>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>Hello Vite + React!</p>
+        <p>
+          <button onClick={() => setCount((count) => count + 1)}>
+            count is: {count}
+          </button>
+        </p>
+        <p>
+          Edit <code>App.tsx</code> and save to test HMR updates.!!!!
+        </p>
+        <p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+          {' | '}
+          <a
+            className="App-link"
+            href="https://vitejs.dev/guide/features.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Vite Docs
+          </a>
+        </p>
+      </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
