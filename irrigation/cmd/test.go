@@ -16,10 +16,12 @@ var (
 	relay4 = rpio.Pin(17)
 
 	testCmdDuration time.Duration
+	testCmdChannel  uint
 )
 
 func init() {
 	testCmd.Flags().DurationVar(&testCmdDuration, "duration", 1*time.Second, "duration to test for")
+	testCmd.Flags().UintVar(&testCmdChannel, "channel", 1, "channel to test on")
 }
 
 var testCmd = &cobra.Command{
@@ -34,8 +36,8 @@ var testCmd = &cobra.Command{
 		defer rpio.Close()
 
 		waterer := water.NewWaterer(relay1, []rpio.Pin{relay2, relay3, relay4})
-		channels := []water.Channel{water.Channel(0), water.Channel(1), water.Channel(2)}
 
-		waterer.Water(channels[0], testCmdDuration)
+		channel := water.Channel(testCmdChannel)
+		waterer.Water(channel, testCmdDuration)
 	},
 }
