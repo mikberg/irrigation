@@ -30,7 +30,7 @@ var analogCmd = &cobra.Command{
 
 		rpio.SpiSpeed(1000000)
 		rpio.SpiChipSelect(0)
-		ticker := time.NewTicker(100 * time.Millisecond)
+		ticker := time.NewTicker(500 * time.Millisecond)
 
 		w := tabwriter.NewWriter(os.Stderr, 0, 0, 1, ' ', tabwriter.AlignRight|tabwriter.Debug)
 
@@ -47,7 +47,12 @@ var analogCmd = &cobra.Command{
 
 				voltage := (float32(code) * 3.3) / 1024
 
-				fmt.Fprintf(w, "%.2f\t", voltage)
+				if analogCh == 0 {
+					theta_v := 2.820/voltage - 1.014
+					fmt.Fprintf(w, "%.2f 𝞱 / %.2fv\t", theta_v, voltage)
+				} else {
+					fmt.Fprintf(w, "%.2fv\t", voltage)
+				}
 			}
 			fmt.Fprint(w, "\n")
 			w.Flush()
