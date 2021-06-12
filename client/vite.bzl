@@ -16,12 +16,12 @@ def _vite_project_impl(ctx):
     deps_depsets = []
     inputs = ctx.files.srcs[:] + ctx.files.index_html[:]
     for dep in ctx.attr.deps:
-        # if TsConfigInfo in dep:
-        #     deps_depsets.append(dep[TsConfigInfo].deps)
         if ExternalNpmPackageInfo in dep:
             deps_depsets.append(dep[ExternalNpmPackageInfo].sources)
         if DeclarationInfo in dep:
             deps_depsets.append(dep[DeclarationInfo].transitive_declarations)
+        if DefaultInfo in dep:
+            deps_depsets.append(dep[DefaultInfo].files)
     inputs.extend(depset(transitive = deps_depsets).to_list())
 
     outputs = []

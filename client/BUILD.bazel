@@ -1,6 +1,6 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@npm//vite:index.bzl", "vite")
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("@npm//@bazel/typescript:index.bzl", "ts_config", "ts_project")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("//client:vite.bzl", "vite_project")
 
@@ -10,21 +10,28 @@ write_file(
     content = ["process.chdir(require('path').join(process.env.BUILD_WORKSPACE_DIRECTORY, '" + package_name() + "'));"],
 )
 
+ts_config(
+    name = "ts_config",
+    src = "tsconfig.json",
+    deps = ["//:ts_config"],
+)
+
 # Run Vite from the source directory
 vite(
     name = "dev",
-    args = [
-        "--node_options=--require=./$(rootpath :chdir)",
-    ],
-    data = [":chdir"],
+    # args = [
+    #     "--node_options=--require=./$(rootpath :chdir)",
+    # ],
+    # data = [":chdir"],
 )
 
 # ts_project only for validation
 ts_project(
     name = "ts",
     srcs = glob(["src/*"]),
-    tsconfig = "tsconfig.json",
+    tsconfig = ":ts_config",
     deps = [
+        "//protobuf/blupp",
         "@npm//@types/react",
         "@npm//@types/react-dom",
         "@npm//vite",
@@ -35,13 +42,16 @@ vite_project(
     name = "dist",
     srcs = glob(["src/*"]) + [
         "tsconfig.json",
+        "//:tsconfig.json",
         "vite.config.ts",
     ],
     index_html = "index.html",
     deps = [
+        "//protobuf/blupp",
         "@npm//@vitejs/plugin-react-refresh",
         "@npm//react",
         "@npm//react-dom",
+        "@npm//vite-tsconfig-paths",
     ],
 )
 
