@@ -53,6 +53,7 @@ func (s *PiTemperatureSensor) Start(ctx context.Context) (<-chan *write.Point, <
 				datac <- p
 			case <-ctx.Done():
 				log.Info().Msg("stopping reading temperatures")
+				return
 			}
 		}
 

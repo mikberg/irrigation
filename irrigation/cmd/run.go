@@ -77,6 +77,22 @@ var runCmd = &cobra.Command{
 			}
 		}()
 
+		moistureSensor := sensing.NewMoistureSensor(1)
+		go func() {
+			if datac, errc, err := moistureSensor.Start(ctx); err == nil {
+				go func() {
+					for {
+						select {
+						case err := <-errc:
+							log.Error().Err(err).Msg("error from moisture sensor")
+						case point := <-datac:
+							writeAPI.WritePoint(ctx, point)
+						}
+					}
+				}()
+			}
+		}()
+
 		<-ctx.Done()
 	},
 }

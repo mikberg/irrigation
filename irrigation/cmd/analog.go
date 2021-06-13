@@ -48,8 +48,10 @@ var analogCmd = &cobra.Command{
 				voltage := (float32(code) * 3.3) / 1024
 
 				if analogCh == 0 {
-					theta_v := 2.820/voltage - 1.014
-					fmt.Fprintf(w, "%.2f 𝞱 / %.2fv\t", theta_v, voltage)
+					// theta_v := 2.820/voltage - 1.014
+					// theta_v := 2.48/voltage - 0.72  // from article
+					theta_v := 2.11/voltage - 0.76
+					fmt.Fprintf(w, "%.2f 𝞱_v / %.2fv\t", theta_v, voltage)
 				} else {
 					fmt.Fprintf(w, "%.2fv\t", voltage)
 				}
