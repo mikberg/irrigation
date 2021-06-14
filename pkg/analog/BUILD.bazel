@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "analog",
+    srcs = [
+        "adc.go",
+        "analog.go",
+        "single.go",
+    ],
+    importpath = "github.com/mikberg/irrigation/pkg/analog",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_stianeikeland_go_rpio_v4//:go-rpio"],
+)

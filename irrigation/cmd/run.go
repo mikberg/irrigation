@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+	"github.com/mikberg/irrigation/pkg/analog"
 	"github.com/mikberg/irrigation/pkg/sensing"
 	"github.com/mikberg/irrigation/pkg/yr"
 	"github.com/rs/zerolog/log"
@@ -77,7 +78,13 @@ var runCmd = &cobra.Command{
 			}
 		}()
 
-		moistureSensor := sensing.NewMoistureSensor(1)
+		adc := analog.NewADC()
+		if err := adc.Start(); err != nil {
+			log.Fatal().Err(err).Msg("failed to start adc")
+		}
+		defer adc.Close()
+
+		moistureSensor := sensing.NewMoistureSensor("1", analog.NewSingle(adc, analog.Ch1))
 		go func() {
 			if datac, errc, err := moistureSensor.Start(ctx); err == nil {
 				go func() {

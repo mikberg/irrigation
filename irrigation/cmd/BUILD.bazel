@@ -12,6 +12,7 @@ go_library(
     importpath = "github.com/mikberg/irrigation/irrigation/cmd",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/analog",
         "//pkg/sensing",
         "//pkg/water",
         "//pkg/yr",

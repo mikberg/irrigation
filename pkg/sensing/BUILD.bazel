@@ -11,10 +11,10 @@ go_library(
     importpath = "github.com/mikberg/irrigation/pkg/sensing",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/analog",
         "//pkg/yr",
         "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",
         "@com_github_influxdata_influxdb_client_go_v2//api/write",
         "@com_github_rs_zerolog//log",
-        "@com_github_stianeikeland_go_rpio_v4//:go-rpio",
     ],
 )
