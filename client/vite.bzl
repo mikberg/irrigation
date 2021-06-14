@@ -73,3 +73,84 @@ vite_project = rule(
         ),
     },
 )
+
+# Avoid using non-normalized paths (workspace/../other_workspace/path)
+def _to_manifest_path(ctx, file):
+    if file.short_path.startswith("../"):
+        return file.short_path[3:]
+    else:
+        return ctx.workspace_name + "/" + file.short_path
+
+def _vite_prodev_impl(ctx):
+    out = ctx.actions.declare_file(ctx.attr.name + ".sh")
+    ctx.actions.expand_template(
+        template = ctx.file.launcher_template,
+        output = out,
+        substitutions = {
+            "TEMPLATED_main": _to_manifest_path(ctx, ctx.executable.prodevserver),
+        },
+        is_executable = True,
+    )
+
+    deps_depsets = []
+    inputs = ctx.files.srcs[:] + ctx.files.index_html[:]
+    for dep in ctx.attr.deps:
+        if ExternalNpmPackageInfo in dep:
+            deps_depsets.append(dep[ExternalNpmPackageInfo].sources)
+        if DeclarationInfo in dep:
+            deps_depsets.append(dep[DeclarationInfo].transitive_declarations)
+        if DefaultInfo in dep:
+            deps_depsets.append(dep[DefaultInfo].files)
+    inputs.extend(depset(transitive = deps_depsets).to_list())
+
+    files = inputs
+
+    transitive = [
+        ctx.attr.prodevserver[DefaultInfo].default_runfiles.files,
+    ]
+
+    runfiles = ctx.runfiles(
+        files = files,
+        transitive_files = depset([], transitive = transitive),
+    )
+
+    return [
+        DefaultInfo(
+            executable = out,
+            runfiles = runfiles,
+        ),
+    ]
+
+vite_prodev = rule(
+    implementation = _vite_prodev_impl,
+    attrs = {
+        "srcs": attr.label_list(
+            allow_files = True,
+        ),
+        "index_html": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "deps": attr.label_list(
+            providers = [
+                [DeclarationInfo],
+            ],
+            aspects = [module_mappings_aspect],
+        ),
+        "vite": attr.label(
+            default = Label(_DEFAULT_VITE),
+            executable = True,
+            cfg = "host",
+        ),
+        "prodevserver": attr.label(
+            default = "//client/vite:prodevserver",
+            executable = True,
+            cfg = "host",
+        ),
+        "launcher_template": attr.label(
+            allow_single_file = True,
+            default = "//client/vite:launcher_template.sh",
+        ),
+    },
+    executable = True,
+)

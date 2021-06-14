@@ -2,7 +2,7 @@ load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@npm//vite:index.bzl", "vite")
 load("@npm//@bazel/typescript:index.bzl", "ts_config", "ts_project")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
-load("//client:vite.bzl", "vite_project")
+load("//client:vite.bzl", "vite_prodev", "vite_project")
 
 write_file(
     name = "chdir",
@@ -46,6 +46,28 @@ vite_project(
         "vite.config.ts",
     ],
     index_html = "index.html",
+    deps = [
+        "//protobuf:car_ts_proto",
+        "//protobuf/blupp",
+        "@npm//@vitejs/plugin-react-refresh",
+        "@npm//google-protobuf",
+        "@npm//react",
+        "@npm//react-dom",
+        "@npm//vite-tsconfig-paths",
+    ],
+)
+
+vite_prodev(
+    name = "prodev",
+    srcs = glob(["src/*"]) + [
+        "tsconfig.json",
+        "//:tsconfig.json",
+        "vite.config.ts",
+    ],
+    index_html = "index.html",
+    tags = [
+        "ibazel_notify_changes",
+    ],
     deps = [
         "//protobuf:car_ts_proto",
         "//protobuf/blupp",

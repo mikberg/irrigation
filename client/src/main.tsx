@@ -10,7 +10,7 @@ blupp('world');
 
 const car = new car_pb.Car();
 car.setMake('Peugeot');
-car.setModel('307 SW');
+car.setModel('307 SWs');
 console.log(car.toObject());
 
 ReactDOM.render(
