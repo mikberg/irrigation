@@ -19,10 +19,10 @@ ts_config(
 # Run Vite from the source directory
 vite(
     name = "dev",
-    # args = [
-    #     "--node_options=--require=./$(rootpath :chdir)",
-    # ],
-    # data = [":chdir"],
+    args = [
+        "--node_options=--require=./$(rootpath :chdir)",
+    ],
+    data = [":chdir"],
 )
 
 # ts_project only for validation
