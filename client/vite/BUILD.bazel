@@ -1,0 +1,9 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+
+nodejs_binary(
+    name = "prodevserver",
+    entry_point = "index.js",
+    visibility = ["//visibility:public"],
+)
+
+exports_files(["launcher_template.sh"])

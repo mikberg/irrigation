@@ -1,0 +1,5 @@
+{
+  "name": "blupp",
+  "main": "blupp.js",
+  "typings": "blupp.d.ts"
+}
