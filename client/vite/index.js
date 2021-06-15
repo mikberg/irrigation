@@ -8,6 +8,9 @@ const { readFileSync, readFile } = require('fs');
 
 console.log('hello from prodev');
 
+process.chdir('client/vite')
+console.log('cwd', process.cwd());
+
 class MyWatcher extends EventEmitter {
   constructor() {
     super();
@@ -79,7 +82,6 @@ class MyWatcher extends EventEmitter {
 const myWatcher = new MyWatcher();
 
 process.stdin.on('data', data => {
-  console.log(`echo <${data.toString()}>`)
   if (data.toString().trim() == 'IBAZEL_BUILD_COMPLETED SUCCESS') {
     console.log('Files were updated! :---) ')
     myWatcher.blupp();
@@ -90,7 +92,7 @@ process.stdin.on('data', data => {
 
 const restartServer = async () => {
   return await createServer({
-    configFile: false,
+    configFile: '../vite.config.ts',
     root: path.join(__dirname, '..'),
     server: {
       port: 1337,
