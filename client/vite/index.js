@@ -1,113 +1,128 @@
 #!/usr/bin/env node
 
 const { createServer } = require('vite');
-const { handleHMRUpdate } = require('vite/dist/node');
 const path = require('path');
 const { EventEmitter } = require('stream');
-const { readFileSync, readFile } = require('fs');
 
-console.log('hello from prodev');
-
-process.chdir('client/vite')
-console.log('cwd', process.cwd());
-
-class MyWatcher extends EventEmitter {
-  constructor() {
+class BazelWatcher extends EventEmitter {
+  constructor(stream) {
     super();
 
-    this.files = [];
-    this.server = null;
+    stream.on('data', (data) => this.onData(data))
   }
 
-  setServer(server) {
-    this.server = server;
+  onData(data) {
+    const event = data.toString().trim();
+
+    switch (event) {
+      case 'IBAZEL_BUILD_STARTED':
+        this.emit('started');
+        break;
+      case 'IBAZEL_BUILD_COMPLETED SUCCESS':
+        this.emit('build_success');
+        break;
+      case 'IBAZEL_BUILD_COMPLETED FAILURE':
+        this.emit('build_failure');
+        break;
+      default:
+        throw new Error(`Unknown event from ibazel: ${event}`)
+    }
+  }
+}
+
+
+class Coordinator {
+  constructor(config) {
+    this.config = config;
+
+    this.bazelWatcher = new BazelWatcher(process.stdin);
+    this.bazelWatcher.on('build_success', this.onBuildSuccess.bind(this));
   }
 
-  add(paths, origAdd, internal) {
-    console.log('[MyWatcher] Added file!', paths)
+  async createServer() {
+    const server = await createServer(this.config);
 
-    this.files.push(paths);
+    // server.watcher.on('change', (filePath) => {
+    //   console.log('FILE CHANGED; RESTARTING SERVER!!', path.relative(this.config.root, filePath));
+    //   this.restartServer();
+    // });
 
-    return this;
+    // server.watcher.add([
+    //   '../protobuf/car_pb.js',
+    //   '../protobuf/car_pb.mjs',
+    //   '../protobuf/car_pb.d.ts',
+    // ]);
+
+    // server.watcher
+    //   .on('add', path => console.log(`File ${path} has been added`))
+    //   .on('change', path => console.log(`File ${path} has been changed`))
+    //   .on('unlink', path => console.log(`File ${path} has been removed`));
+
+    server.watcher.on('change', filePath => {
+      const relativePath = path.relative(this.config.root, filePath);
+      console.log(`File ${relativePath} changed`);
+      if (relativePath.startsWith('..')) {
+        console.info('')
+        this.restartServer();
+      }
+    });
+
+    // // More possible events.
+    // server.watcher
+    //   .on('addDir', path => console.log(`Directory ${path} has been added`))
+    //   .on('unlinkDir', path => console.log(`Directory ${path} has been removed`))
+    //   .on('error', error => console.log(`Watcher error: ${error}`))
+    //   .on('ready', () => console.log('Initial scan complete. Ready for changes'))
+    //   .on('raw', (event, path, details) => { // internal
+    //     console.log('Raw event info:', event, path, details);
+    //   });
+
+    // console.log('WATCHERS', server.watcher.getWatched());
+
+    return server;
   }
 
+  async start() {
+    this.server = await this.createServer();
+    await this.server.listen();
+  }
+
+  async onBuildSuccess() {
+    // console.log('WATCHERS', this.server.watcher.getWatched());
+    // await this.fullRefresh();
+    // await this.restartServer();
+  }
+
+  // Restarts the server, causing the client to reload
   async restartServer() {
-    const newServer = await restartServer();
+    const newServer = await this.createServer(this.config);
 
     await this.server.close();
 
     this.server = newServer;
     await this.server.listen();
-    console.log('server restarted...');
   }
 
-  async blupp() {
-    console.log('Emitting change!!!', this.files);
-    this.emit('change', 'somepath.ts');
-
+  // Causes client to refresh
+  async fullRefresh() {
     const { ws, config, moduleGraph } = this.server;
 
-    // Reloads the page, but doesn't change content
-    // ws.send({
-    //   type: 'full-reload',
-    //   path: '*'
-    // });
-
-    // Works!!
-    this.restartServer();
-
-    // console.log('contents', readFileSync('client/src/App.tsx').toString());
-    // const mods = moduleGraph.getModulesByFile('src/App.tsx');
-    // console.log('mods', mods);
-
-    //   const hmrContext = {
-    //     file: 'src/App.tsx',
-    //     timestamp: Date.now(),
-    //     modules: mods ? [...mods] : [],
-    //     read: () => readFileSync('client/src/App.tsx'),
-    //     server: this.server,
-    //   };
-    //   for (const plugin of config.plugins) {
-    //     if (plugin.handleHotUpdate) {
-    //       const filteredModules = await plugin.handleHotUpdate(hmrContext);
-    //       if (filteredModules) {
-    //         hmrContext.modules = filteredModules;
-    //       }
-    //     }
-    //   }
-    //   console.log(hmrContext);
+    ws.send({
+      type: 'full-reload',
+      path: '*'
+    });
   }
 }
 
-const myWatcher = new MyWatcher();
-
-process.stdin.on('data', data => {
-  if (data.toString().trim() == 'IBAZEL_BUILD_COMPLETED SUCCESS') {
-    console.log('Files were updated! :---) ')
-    myWatcher.blupp();
-  } else {
-    console.log('something else happened');
+const coordinator = new Coordinator({
+  configFile: path.join(process.env.VITE_ROOT, 'vite.config.ts'),
+  root: process.env.VITE_ROOT,
+  server: {
+    port: 3000,
+    watch: {
+      usePolling: true,
+    }
   }
 });
 
-const restartServer = async () => {
-  return await createServer({
-    configFile: '../vite.config.ts',
-    root: path.join(__dirname, '..'),
-    server: {
-      port: 1337,
-    },
-  });
-};
-
-(async () => {
-  console.log('dirname', __dirname);
-
-  const server = await restartServer();
-
-  server.watcher = myWatcher;
-  myWatcher.setServer(server);
-
-  console.log(server.watcher);
-  await server.listen();
-})()
+(async () => await coordinator.start())();

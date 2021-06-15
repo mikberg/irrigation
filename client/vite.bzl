@@ -87,6 +87,7 @@ def _vite_prodev_impl(ctx):
         template = ctx.file.launcher_template,
         output = out,
         substitutions = {
+            "TEMPLATED_root": paths.dirname(ctx.file.index_html.short_path),
             "TEMPLATED_main": _to_manifest_path(ctx, ctx.executable.prodevserver),
         },
         is_executable = True,
@@ -136,11 +137,6 @@ vite_prodev = rule(
                 [DeclarationInfo],
             ],
             aspects = [module_mappings_aspect],
-        ),
-        "vite": attr.label(
-            default = Label(_DEFAULT_VITE),
-            executable = True,
-            cfg = "host",
         ),
         "prodevserver": attr.label(
             default = "//client/vite:prodevserver",

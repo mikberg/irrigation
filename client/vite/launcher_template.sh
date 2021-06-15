@@ -16,4 +16,6 @@ main=$(rlocation "TEMPLATED_main")
 # @TODO: hacky
 export RUNFILES="$(pwd)/.."
 
+export VITE_ROOT="TEMPLATED_root"
+
 "${main}"
