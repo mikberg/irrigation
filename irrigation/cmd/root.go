@@ -32,6 +32,7 @@ func init() {
 	rootCmd.AddCommand(runCmd)
 	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(analogCmd)
+	rootCmd.AddCommand(distanceCmd)
 }
 
 func initConfig() {

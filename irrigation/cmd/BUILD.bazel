@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "analog.go",
         "cmd.go",
+        "distance.go",
         "root.go",
         "run.go",
         "test.go",
