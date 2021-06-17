@@ -84,9 +84,25 @@ var runCmd = &cobra.Command{
 		}
 		defer adc.Close()
 
-		moistureSensor := sensing.NewMoistureSensor("1", analog.NewSingle(adc, analog.Ch1))
+		moistureSensor0 := sensing.NewMoistureSensor("0", analog.NewSingle(adc, analog.Ch0))
 		go func() {
-			if datac, errc, err := moistureSensor.Start(ctx); err == nil {
+			if datac, errc, err := moistureSensor0.Start(ctx); err == nil {
+				go func() {
+					for {
+						select {
+						case err := <-errc:
+							log.Error().Err(err).Msg("error from moisture sensor")
+						case point := <-datac:
+							writeAPI.WritePoint(ctx, point)
+						}
+					}
+				}()
+			}
+		}()
+
+		moistureSensor1 := sensing.NewMoistureSensor("1", analog.NewSingle(adc, analog.Ch1))
+		go func() {
+			if datac, errc, err := moistureSensor1.Start(ctx); err == nil {
 				go func() {
 					for {
 						select {

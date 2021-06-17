@@ -33,7 +33,11 @@ var analogCmd = &cobra.Command{
 				voltage := adc.Read(analog.Channel(analogCh))
 
 				switch analogCh {
+				case 0:
+					fallthrough
 				case 1:
+					fallthrough
+				case 2:
 					// theta_v := 2.820/voltage - 1.014
 					// theta_v := 2.48/voltage - 0.72  // from article
 					theta_v := 2.11/voltage - 0.76
