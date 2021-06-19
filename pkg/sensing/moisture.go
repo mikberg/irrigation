@@ -55,3 +55,13 @@ func (s *MoistureSensor) Start(ctx context.Context) (<-chan *write.Point, <-chan
 
 	return datac, errc, nil
 }
+
+func (s *MoistureSensor) Read() (float64, error) {
+	voltage := s.adc.Read()
+
+	if voltage == 0.0 {
+		return 0, nil
+	}
+
+	return 2.11/voltage - 0.77, nil
+}

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package irrigation;
+
+message WaterRequest {
+  uint32 channel = 1;
+  uint32 duration = 2;
+}
+
+message WaterResponse {};
+
+message GetWaterLevelRequest {}
+
+message GetWaterLevelResponse {
+  float distance = 1;
+  float liters = 2;
+}
+
+message GetRelativeMoistureRequest {
+  uint32 channel = 1;
+}
+
+message GetRelativeMoistureResponse {
+  float moisture = 1;
+}
+
+service Irrigation {
+  rpc Water(WaterRequest) returns (WaterResponse) {};
+  rpc GetWaterLevel(GetWaterLevelRequest) returns (GetWaterLevelResponse) {};
+  rpc GetRelativeMoisture(GetRelativeMoistureRequest) returns (GetRelativeMoistureResponse) {};
+}

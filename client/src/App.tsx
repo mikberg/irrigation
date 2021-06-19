@@ -1,43 +1,65 @@
-import React, { useState } from 'react'
-import './App.css'
-import logo from './logo.svg'
+import { Container, Grid, Paper, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import './App.css';
+import MoistureSensor from './components/MoistureSensor';
+import WaterButton from './components/WaterButton';
+
+const useStyles = makeStyles((theme: Theme) => createStyles(
+  {
+    root: {
+      flexGrow: 1,
+    },
+    content: {
+      flexGrow: 1,
+      overflow: 'auto',
+    },
+    paper: {
+      padding: theme.spacing(1),
+      textAlign: 'center',
+    }
+  }
+));
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const classes = useStyles();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates!!sd
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div className={classes.root}>
+      <main className={classes.content}>
+        <Container maxWidth="lg" style={{ padding: 20 }}>
+          <Grid container spacing={1}>
+            <Grid item xs>
+              <Paper className={classes.paper}>
+                <MoistureSensor channel={0} />
+              </Paper>
+            </Grid>
+            <Grid item xs>
+              <Paper className={classes.paper}>
+                <MoistureSensor channel={1} />
+              </Paper>
+            </Grid>
+            <Grid item xs>
+              <Paper className={classes.paper}>xs</Paper>
+            </Grid>
+          </Grid>
+
+
+          <Typography variant="h6" gutterBottom>Apply water</Typography>
+
+          <Grid container spacing={1}>
+            <Grid item xs>
+              <WaterButton channel={0} />
+            </Grid>
+            <Grid item xs>
+              <WaterButton channel={1} />
+            </Grid>
+            <Grid item xs>
+              <WaterButton channel={2} />
+            </Grid>
+          </Grid>
+
+        </Container>
+      </main>
     </div>
   )
 }

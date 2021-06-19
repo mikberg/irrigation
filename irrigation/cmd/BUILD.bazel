@@ -15,6 +15,7 @@ go_library(
     deps = [
         "//pkg/analog",
         "//pkg/sensing",
+        "//pkg/server",
         "//pkg/water",
         "//pkg/yr",
         "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",

@@ -11,4 +11,5 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/stianeikeland/go-rpio/v4 v4.4.1-0.20200705092735-acc952dac3eb
 	github.com/stretchr/testify v1.7.0
+	google.golang.org/grpc v1.38.0
 )
