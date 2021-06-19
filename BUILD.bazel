@@ -1,7 +1,9 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@npm//@bazel/typescript:index.bzl", "ts_config")
+load("@io_bazel_rules_go//go:def.bzl", "go_path")
 
 # gazelle:prefix github.com/mikberg/irrigation
+# gazelle:resolve go github.com/mikberg/irrigation/protobuf @irrigation//protobuf
 gazelle(name = "gazelle")
 
 # update the running process on the pi
@@ -28,3 +30,12 @@ ts_config(
 )
 
 exports_files(["tsconfig.json"])
+
+go_path(
+    name = "go_path",
+    include_transitive = False,
+    mode = "copy",
+    deps = [
+        "//protobuf:irrigation",
+    ],
+)

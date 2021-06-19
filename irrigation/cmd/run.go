@@ -37,19 +37,6 @@ var runCmd = &cobra.Command{
 			}
 		}()
 
-		// gRPC
-		grpcServer := server.NewServer()
-		lis, err := net.Listen("tcp", ":50051")
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to listen")
-		}
-		go func() {
-			log.Info().Msg("starting gRPC server")
-			if err := grpcServer.Serve(lis); err != nil {
-				log.Fatal().Err(err).Msg("failed to start gRPC server")
-			}
-		}()
-
 		influxClient := influxdb2.NewClient("http://localhost:8086", "irrigation:bluppface")
 		defer influxClient.Close()
 		writeAPI := influxClient.WriteAPIBlocking("", "irrigation")
@@ -128,6 +115,26 @@ var runCmd = &cobra.Command{
 						}
 					}
 				}()
+			}
+		}()
+
+		// gRPC
+		serverConfig := &server.ServerConfig{
+			MoistureSensors: map[uint32]*sensing.MoistureSensor{
+				0: moistureSensor0.(*sensing.MoistureSensor),
+				1: moistureSensor1.(*sensing.MoistureSensor),
+			},
+		}
+
+		grpcServer := server.NewServer(serverConfig)
+		lis, err := net.Listen("tcp", ":50051")
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to listen")
+		}
+		go func() {
+			log.Info().Msg("starting gRPC server")
+			if err := grpcServer.Serve(lis); err != nil {
+				log.Fatal().Err(err).Msg("failed to start gRPC server")
 			}
 		}()
 

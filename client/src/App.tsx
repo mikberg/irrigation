@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
-import './App.css'
-import logo from './logo.svg'
+import React, { useState } from 'react';
+import './App.css';
+import MoistureSensor from './components/MoistureSensor';
+import logo from './logo.svg';
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,6 +17,10 @@ function App() {
             count is: {count}
           </button>
         </p>
+
+        <MoistureSensor channel={0} />
+        <MoistureSensor channel={1} />
+
         <p>
           Edit <code>App.tsx</code> and save to test HMR updates!!sd
         </p>

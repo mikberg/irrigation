@@ -40,7 +40,7 @@ ts_project(
 
 vite_project(
     name = "dist",
-    srcs = glob(["src/*"]) + [
+    srcs = glob(["src/**/*"]) + [
         "tsconfig.json",
         "//:tsconfig.json",
         "vite.config.ts",
@@ -51,6 +51,7 @@ vite_project(
         "//protobuf/blupp",
         "@npm//@vitejs/plugin-react-refresh",
         "@npm//google-protobuf",
+        "@npm//grpc-web",
         "@npm//react",
         "@npm//react-dom",
         "@npm//vite-tsconfig-paths",
@@ -59,7 +60,7 @@ vite_project(
 
 vite_prodev(
     name = "prodev",
-    srcs = glob(["src/*"]) + [
+    srcs = glob(["src/**/*"]) + [
         "tsconfig.json",
         "//:tsconfig.json",
         "vite.config.ts",

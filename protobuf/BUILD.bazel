@@ -6,7 +6,7 @@ load("@npm//@bazel/labs:index.bzl", "ts_proto_library")
 go_proto_library(
     name = "irrigation_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/mikberg/irrigation/api/v1/irrigation",
+    importpath = "github.com/mikberg/irrigation/protobuf",
     proto = ":irrigation_proto",
     visibility = ["//visibility:public"],
 )
@@ -26,6 +26,12 @@ proto_library(
 go_library(
     name = "irrigation",
     embed = [":irrigation_go_proto"],
-    importpath = "github.com/mikberg/irrigation/api/v1/irrigation",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "protobuf",
+    embed = [":irrigation_go_proto"],
+    importpath = "github.com/mikberg/irrigation/protobuf",
     visibility = ["//visibility:public"],
 )
