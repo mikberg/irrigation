@@ -3,11 +3,13 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/mikberg/irrigation/pkg/analog"
 	"github.com/mikberg/irrigation/pkg/sensing"
+	"github.com/mikberg/irrigation/pkg/server"
 	"github.com/mikberg/irrigation/pkg/yr"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -32,6 +34,19 @@ var runCmd = &cobra.Command{
 			log.Info().Msg("starting http server")
 			if err := http.ListenAndServe(":8080", nil); err != nil {
 				fmt.Println(err)
+			}
+		}()
+
+		// gRPC
+		grpcServer := server.NewServer()
+		lis, err := net.Listen("tcp", ":50051")
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to listen")
+		}
+		go func() {
+			log.Info().Msg("starting gRPC server")
+			if err := grpcServer.Serve(lis); err != nil {
+				log.Fatal().Err(err).Msg("failed to start gRPC server")
 			}
 		}()
 

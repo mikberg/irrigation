@@ -1,5 +1,5 @@
 import blupp from '@irrigation/protobuf/blupp';
-import * as car_pb from '@irrigation/protobuf/car_pb';
+import * as irr_pb from '@irrigation/protobuf/irrigation_pb';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -8,10 +8,10 @@ import './index.css';
 
 blupp('world');
 
-const car = new car_pb.Car();
-car.setMake('Peugeot');
-car.setModel('307 SWs');
-console.log(car.toObject());
+const waterRequest = new irr_pb.WaterRequest();
+waterRequest.setDuration(10);
+waterRequest.setChannel(0);
+console.log(waterRequest.toObject());
 
 ReactDOM.render(
   <React.StrictMode>
