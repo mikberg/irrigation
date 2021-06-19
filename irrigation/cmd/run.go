@@ -10,9 +10,11 @@ import (
 	"github.com/mikberg/irrigation/pkg/analog"
 	"github.com/mikberg/irrigation/pkg/sensing"
 	"github.com/mikberg/irrigation/pkg/server"
+	"github.com/mikberg/irrigation/pkg/water"
 	"github.com/mikberg/irrigation/pkg/yr"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
 var runCmd = &cobra.Command{
@@ -118,12 +120,16 @@ var runCmd = &cobra.Command{
 			}
 		}()
 
+		// Watering
+		waterer := water.NewWaterer(relay1, []rpio.Pin{relay2, relay3, relay4})
+
 		// gRPC
 		serverConfig := &server.ServerConfig{
 			MoistureSensors: map[uint32]*sensing.MoistureSensor{
 				0: moistureSensor0.(*sensing.MoistureSensor),
 				1: moistureSensor1.(*sensing.MoistureSensor),
 			},
+			Waterer: waterer,
 		}
 
 		grpcServer := server.NewServer(serverConfig)

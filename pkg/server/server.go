@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"time"
 
 	"github.com/mikberg/irrigation/pkg/sensing"
+	"github.com/mikberg/irrigation/pkg/water"
 	pb "github.com/mikberg/irrigation/protobuf"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -12,6 +14,7 @@ import (
 
 type ServerConfig struct {
 	MoistureSensors map[uint32]*sensing.MoistureSensor
+	Waterer         water.Waterer
 }
 
 type grpcServer struct {
@@ -31,7 +34,17 @@ func NewServer(config *ServerConfig) *grpc.Server {
 }
 
 func (s *grpcServer) Water(ctx context.Context, in *pb.WaterRequest) (*pb.WaterResponse, error) {
-	log.Info().Msgf("will water on channel %d for %d seconds", in.GetChannel(), in.GetDuration())
+	log.Info().Msgf("applying water on channel %d for %d seconds", in.GetChannel(), in.GetDuration())
+
+	channel := water.Channel(in.GetChannel())
+
+	// Asynchronously water, so that we can return immediately
+	go func() {
+		if err := s.config.Waterer.Water(channel, time.Duration(in.GetDuration())*time.Second); err != nil {
+			log.Error().Err(err).Msg("failed to water")
+		}
+	}()
+
 	return &pb.WaterResponse{}, nil
 }
 

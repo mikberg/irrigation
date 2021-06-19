@@ -49,6 +49,7 @@ vite_project(
     deps = [
         "//protobuf:irrigation_ts_proto",
         "//protobuf/blupp",
+        "@npm//@material-ui/core",
         "@npm//@vitejs/plugin-react-refresh",
         "@npm//google-protobuf",
         "@npm//grpc-web",
