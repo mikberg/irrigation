@@ -125,6 +125,20 @@ var runCmd = &cobra.Command{
 
 		// Water level
 		waterLevelSensor := sensing.NewWaterLevelSensor()
+		go func() {
+			if datac, errc, err := waterLevelSensor.Start(ctx); err == nil {
+				go func() {
+					for {
+						select {
+						case err := <-errc:
+							log.Error().Err(err).Msg("error from water level sensor")
+						case point := <-datac:
+							writeAPI.WritePoint(ctx, point)
+						}
+					}
+				}()
+			}
+		}()
 
 		// gRPC
 		serverConfig := &server.ServerConfig{

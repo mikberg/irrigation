@@ -25,7 +25,7 @@ export default function WaterLevelSensor() {
   useEffect(() => {
     getWaterLevel();
 
-    const interval = setInterval(() => getWaterLevel(), 5000);
+    const interval = setInterval(() => getWaterLevel(), Math.PI * 3000);
     return () => clearInterval(interval);
   }, []);
 

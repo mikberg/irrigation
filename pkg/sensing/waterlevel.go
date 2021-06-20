@@ -2,33 +2,84 @@ package sensing
 
 import (
 	"context"
+	"sort"
 	"sync"
 	"time"
 
+	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api/write"
 	"github.com/stianeikeland/go-rpio/v4"
 )
 
 type WaterLevelSensor struct {
-	mu      *sync.Mutex
-	trigPin rpio.Pin
-	echoPin rpio.Pin
+	mu       *sync.Mutex
+	trigPin  rpio.Pin
+	echoPin  rpio.Pin
+	interval time.Duration
 }
 
 func NewWaterLevelSensor() Sensor {
 	return &WaterLevelSensor{
-		mu:      &sync.Mutex{},
-		trigPin: rpio.Pin(23),
-		echoPin: rpio.Pin(24),
+		mu:       &sync.Mutex{},
+		trigPin:  rpio.Pin(23),
+		echoPin:  rpio.Pin(24),
+		interval: 60 * time.Second,
 	}
 }
 
 func (s *WaterLevelSensor) Start(ctx context.Context) (<-chan *write.Point, <-chan error, error) {
-	return nil, nil, nil
+	datac := make(chan *write.Point)
+	errc := make(chan error)
+
+	go func() {
+		defer close(datac)
+		defer close(errc)
+
+		ticker := time.NewTicker(s.interval)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				distance, err := s.Read()
+				if err != nil {
+					errc <- err
+					continue
+				}
+				p := influxdb2.NewPointWithMeasurement("waterlevel").
+					AddField("distance", distance).
+					AddField("level", 40.0-distance).
+					SetTime(time.Now())
+				datac <- p
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	return datac, errc, nil
 }
 
 func (s *WaterLevelSensor) Read() (float64, error) {
-	return s.readTimeOfFlight().Seconds() * 34300.0/ 2, nil
+	// return s.readTimeOfFlight().Seconds() * 34300.0 / 2, nil
+
+	// var sum float64
+	// for i := 0; i < 10; i++ {
+	// 	sum += s.readTimeOfFlight().Seconds() * 34300 / 2
+	// 	time.Sleep(100 * time.Millisecond)
+	// }
+
+	values := make([]float64, 9)
+	for i := 0; i < 9; i++ {
+		values[i] = s.readTimeOfFlight().Seconds() * 34300 / 2
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	sort.Float64s(values)
+
+	return values[5], nil
+
+	// return sum / 10, nil
 }
 
 func (s *WaterLevelSensor) readTimeOfFlight() time.Duration {
@@ -38,6 +89,8 @@ func (s *WaterLevelSensor) readTimeOfFlight() time.Duration {
 	start := time.Now()
 	end := time.Now()
 
+	s.trigPin.Low()
+	time.Sleep(5 * time.Microsecond)
 	s.trigPin.High()
 	time.Sleep(10 * time.Microsecond)
 	s.trigPin.Low()
