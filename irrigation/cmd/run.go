@@ -120,6 +120,22 @@ var runCmd = &cobra.Command{
 			}
 		}()
 
+		moistureSensor2 := sensing.NewMoistureSensor("2", analog.NewSingle(adc, analog.Ch2))
+		go func() {
+			if datac, errc, err := moistureSensor2.Start(ctx); err == nil {
+				go func() {
+					for {
+						select {
+						case err := <-errc:
+							log.Error().Err(err).Msg("error from moisture sensor")
+						case point := <-datac:
+							writeAPI.WritePoint(ctx, point)
+						}
+					}
+				}()
+			}
+		}()
+
 		// Watering
 		waterer := water.NewWaterer(relay1, []rpio.Pin{relay2, relay3, relay4})
 
