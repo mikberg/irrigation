@@ -11,8 +11,8 @@ source "$(grep -sm1 "^$f " "$0.exe.runfiles_manifest" | cut -f2- -d' ')" 2>/dev/
 { echo>&2 "ERROR: cannot find $f"; exit 1; }; f=; set -e
 # --- end runfiles.bash initialization v2 ---
 
-USER="$(whoami)"
-PI="192.168.0.170"
+USER="mikael"
+PI="irr.mikbe.com"
 BINARY=$(rlocation irrigation/irrigation/irrigation-raspberrypi_/irrigation-raspberrypi)
 
 SSH_COMBO="$USER@$PI"
