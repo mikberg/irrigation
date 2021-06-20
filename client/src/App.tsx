@@ -1,8 +1,9 @@
-import { Container, Grid, Paper, Typography } from '@material-ui/core';
+import { Box, Card, CardContent, Container, Grid, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import MoistureSensor from './components/MoistureSensor';
+import TimeSlider from './components/TimeSlider';
 import WaterButton from './components/WaterButton';
 import WaterLevelSensor from './components/WaterLevelSensor';
 
@@ -23,6 +24,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
 ));
 
 function App() {
+  const [waterDuration, setWaterDuration] = useState<number>(10);
+
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -45,20 +48,24 @@ function App() {
           </Grid>
 
 
-          <Typography variant="h6" gutterBottom>Apply water</Typography>
 
-          <Grid container spacing={1}>
-            <Grid item xs>
-              <WaterButton channel={0} />
-            </Grid>
-            <Grid item xs>
-              <WaterButton channel={1} />
-            </Grid>
-            <Grid item xs>
-              <WaterButton channel={2} />
-            </Grid>
-          </Grid>
+          <Box my={2} p={0}>
+            <Card>
+              <CardContent>
+                <Box my={1}>
+                  <WaterButton channel={0} duration={waterDuration} />
+                </Box>
+                <Box my={1}>
+                  <WaterButton channel={1} duration={waterDuration} />
+                </Box>
+                <Box my={1}>
+                  <WaterButton channel={2} duration={waterDuration} />
+                </Box>
 
+                <TimeSlider onChange={setWaterDuration} />
+              </CardContent>
+            </Card>
+          </Box>
 
           <Paper className={classes.paper}>
             <WaterLevelSensor />
@@ -66,7 +73,7 @@ function App() {
 
         </Container>
       </main>
-    </div>
+    </div >
   )
 }
 

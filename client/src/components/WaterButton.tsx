@@ -4,14 +4,12 @@ import { Error as GrpcError } from 'grpc-web';
 import React, { useState } from 'react';
 import irrService from '../irrService';
 
-export default function WaterButton({ channel }: { channel: number }) {
+export default function WaterButton({ channel, duration }: { channel: number, duration: number }) {
   const [error, setError] = useState<GrpcError | null>(null);
   const [isWatering, setIsWatering] = useState(false);
   const [isDone, setIsDone] = useState(false);
 
-
   const waterTimer = React.useRef<NodeJS.Timer>();
-  const successTimer = React.useRef<NodeJS.Timer>();
 
   const handleButtonClick = () => {
     if (isWatering) {
@@ -22,7 +20,7 @@ export default function WaterButton({ channel }: { channel: number }) {
 
     const req = new WaterRequest();
     req.setChannel(channel);
-    req.setDuration(10);
+    req.setDuration(duration);
 
     irrService.water(req, {}, (err, resp) => {
       if (err) {
@@ -45,8 +43,8 @@ export default function WaterButton({ channel }: { channel: number }) {
   };
 
   return (<div>
-    <Button key="button" variant="contained" color="primary" disabled={isWatering} onClick={handleButtonClick}>
-      Water Channel {channel}
+    <Button key="button" variant="contained" color="secondary" disabled={isWatering} onClick={handleButtonClick}>
+      Water Channel {channel} for {duration}s
     </Button>
     <Snackbar key="snackbar" open={isDone} autoHideDuration={2000} onClose={handleSuccessClose} message={error ? `Error! ${error.message}` : 'Watering complete!'} />
   </div>)
