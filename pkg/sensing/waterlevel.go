@@ -20,10 +20,17 @@ type WaterLevelSensor struct {
 }
 
 func NewWaterLevelSensor() Sensor {
+	trigPin := rpio.Pin(23)
+	echoPin := rpio.Pin(24)
+
+	// setup pins
+	trigPin.Output()
+	echoPin.Input()
+
 	return &WaterLevelSensor{
 		mu:       &sync.Mutex{},
-		trigPin:  rpio.Pin(23),
-		echoPin:  rpio.Pin(24),
+		trigPin:  trigPin,
+		echoPin:  echoPin,
 		interval: 60 * time.Second,
 	}
 }
@@ -62,13 +69,6 @@ func (s *WaterLevelSensor) Start(ctx context.Context) (<-chan *write.Point, <-ch
 
 func (s *WaterLevelSensor) Read() (float64, error) {
 	// return s.readTimeOfFlight().Seconds() * 34300.0 / 2, nil
-
-	// var sum float64
-	// for i := 0; i < 10; i++ {
-	// 	sum += s.readTimeOfFlight().Seconds() * 34300 / 2
-	// 	time.Sleep(100 * time.Millisecond)
-	// }
-
 	values := make([]float64, 9)
 	for i := 0; i < 9; i++ {
 		values[i] = s.readTimeOfFlight().Seconds() * 34300 / 2
@@ -80,8 +80,6 @@ func (s *WaterLevelSensor) Read() (float64, error) {
 	// Empty reading: 25.50
 	// Approx 1.496 liters per cm
 	return math.Max(0, (25.50-values[5])*1.496), nil
-
-	// return sum / 10, nil
 }
 
 func (s *WaterLevelSensor) readTimeOfFlight() time.Duration {

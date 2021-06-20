@@ -3,7 +3,6 @@ package cmd
 import (
 	"time"
 
-	"github.com/mikberg/irrigation/pkg/sensing"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/stianeikeland/go-rpio/v4"
@@ -25,15 +24,40 @@ var distanceCmd = &cobra.Command{
 		}
 		defer rpio.Close()
 
-		waterLevelSensor := sensing.NewWaterLevelSensor().(*sensing.WaterLevelSensor)
+		// setup pins
+		trigPin.Output()
+		echoPin.Input()
+
+		readTimeOfFlight := func() time.Duration {
+			start := time.Now()
+			end := time.Now()
+
+			trigPin.High()
+			time.Sleep(10 * time.Microsecond)
+			trigPin.Low()
+
+			for idx := 0; echoPin.Read() == rpio.Low; idx++ {
+				if time.Since(start) > 100*time.Millisecond {
+					return 0
+				}
+			}
+			start = time.Now()
+
+			for idx := 0; echoPin.Read() == rpio.High; idx++ {
+				if time.Since(start) > 200*time.Millisecond {
+					return 0
+				}
+			}
+			end = time.Now()
+
+			return end.Sub(start)
+		}
 
 		ticker := time.NewTicker(500 * time.Millisecond)
 		for range ticker.C {
-			liters, err := waterLevelSensor.Read()
-			if err != nil {
-				log.Error().Err(err).Msg("failed to read distance")
-			}
-			log.Info().Msgf("Contents %.2f", liters)
+			timeOfFlight := readTimeOfFlight()
+			distance := timeOfFlight.Seconds() * 34300 / 2
+			log.Info().Msgf("Tof %d μs, dist %.2f cm", timeOfFlight.Microseconds(), distance)
 		}
 	},
 }
