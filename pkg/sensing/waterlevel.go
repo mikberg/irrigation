@@ -2,6 +2,7 @@ package sensing
 
 import (
 	"context"
+	"math"
 	"sort"
 	"sync"
 	"time"
@@ -41,14 +42,13 @@ func (s *WaterLevelSensor) Start(ctx context.Context) (<-chan *write.Point, <-ch
 		for {
 			select {
 			case <-ticker.C:
-				distance, err := s.Read()
+				volume, err := s.Read()
 				if err != nil {
 					errc <- err
 					continue
 				}
 				p := influxdb2.NewPointWithMeasurement("waterlevel").
-					AddField("distance", distance).
-					AddField("level", 40.0-distance).
+					AddField("volume", volume).
 					SetTime(time.Now())
 				datac <- p
 			case <-ctx.Done():
@@ -77,7 +77,9 @@ func (s *WaterLevelSensor) Read() (float64, error) {
 
 	sort.Float64s(values)
 
-	return values[5], nil
+	// Empty reading: 25.50
+	// Approx 1.496 liters per cm
+	return math.Max(0, (25.50-values[5])*1.496), nil
 
 	// return sum / 10, nil
 }

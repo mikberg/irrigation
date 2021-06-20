@@ -29,11 +29,11 @@ var distanceCmd = &cobra.Command{
 
 		ticker := time.NewTicker(500 * time.Millisecond)
 		for range ticker.C {
-			distance, err := waterLevelSensor.Read()
+			liters, err := waterLevelSensor.Read()
 			if err != nil {
 				log.Error().Err(err).Msg("failed to read distance")
 			}
-			log.Info().Msgf("Distance %.2f cm", distance)
+			log.Info().Msgf("Contents %.2f", liters)
 		}
 	},
 }

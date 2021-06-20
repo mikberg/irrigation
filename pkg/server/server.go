@@ -68,13 +68,12 @@ func (s *grpcServer) GetRelativeMoisture(ctx context.Context, in *pb.GetRelative
 }
 
 func (s *grpcServer) GetWaterLevel(ctx context.Context, in *pb.GetWaterLevelRequest) (*pb.GetWaterLevelResponse, error) {
-	distance, err := s.config.WaterLevelSensor.Read()
+	volume, err := s.config.WaterLevelSensor.Read()
 	if err != nil {
 		return nil, grpc.Errorf(codes.Internal, "sensor malfunction: %w", err)
 	}
 
 	return &pb.GetWaterLevelResponse{
-		Distance: float32(distance),
-		Liters:   float32(40 - distance),
+		Liters: float32(volume),
 	}, nil
 }
