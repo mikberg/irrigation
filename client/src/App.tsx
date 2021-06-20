@@ -43,7 +43,9 @@ function App() {
               </Paper>
             </Grid>
             <Grid item xs>
-              <Paper className={classes.paper}>xs</Paper>
+              <Paper className={classes.paper}>
+                <MoistureSensor channel={2} />
+              </Paper>
             </Grid>
           </Grid>
 

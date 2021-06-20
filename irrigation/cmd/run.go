@@ -161,6 +161,7 @@ var runCmd = &cobra.Command{
 			MoistureSensors: map[uint32]*sensing.MoistureSensor{
 				0: moistureSensor0.(*sensing.MoistureSensor),
 				1: moistureSensor1.(*sensing.MoistureSensor),
+				2: moistureSensor2.(*sensing.MoistureSensor),
 			},
 			Waterer:          waterer,
 			WaterLevelSensor: waterLevelSensor.(*sensing.WaterLevelSensor),
