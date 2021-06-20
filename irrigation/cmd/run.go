@@ -123,13 +123,17 @@ var runCmd = &cobra.Command{
 		// Watering
 		waterer := water.NewWaterer(relay1, []rpio.Pin{relay2, relay3, relay4})
 
+		// Water level
+		waterLevelSensor := sensing.NewWaterLevelSensor()
+
 		// gRPC
 		serverConfig := &server.ServerConfig{
 			MoistureSensors: map[uint32]*sensing.MoistureSensor{
 				0: moistureSensor0.(*sensing.MoistureSensor),
 				1: moistureSensor1.(*sensing.MoistureSensor),
 			},
-			Waterer: waterer,
+			Waterer:          waterer,
+			WaterLevelSensor: waterLevelSensor.(*sensing.WaterLevelSensor),
 		}
 
 		grpcServer := server.NewServer(serverConfig)

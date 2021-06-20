@@ -6,6 +6,7 @@ go_library(
         "moisture.go",
         "pi.go",
         "sensor.go",
+        "waterlevel.go",
         "yr.go",
     ],
     importpath = "github.com/mikberg/irrigation/pkg/sensing",
@@ -16,5 +17,6 @@ go_library(
         "@com_github_influxdata_influxdb_client_go_v2//:influxdb-client-go",
         "@com_github_influxdata_influxdb_client_go_v2//api/write",
         "@com_github_rs_zerolog//log",
+        "@com_github_stianeikeland_go_rpio_v4//:go-rpio",
     ],
 )

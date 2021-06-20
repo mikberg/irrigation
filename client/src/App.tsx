@@ -4,6 +4,7 @@ import React from 'react';
 import './App.css';
 import MoistureSensor from './components/MoistureSensor';
 import WaterButton from './components/WaterButton';
+import WaterLevelSensor from './components/WaterLevelSensor';
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
   {
@@ -57,6 +58,11 @@ function App() {
               <WaterButton channel={2} />
             </Grid>
           </Grid>
+
+
+          <Paper className={classes.paper}>
+            <WaterLevelSensor />
+          </Paper>
 
         </Container>
       </main>

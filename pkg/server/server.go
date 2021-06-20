@@ -13,8 +13,9 @@ import (
 )
 
 type ServerConfig struct {
-	MoistureSensors map[uint32]*sensing.MoistureSensor
-	Waterer         water.Waterer
+	MoistureSensors  map[uint32]*sensing.MoistureSensor
+	Waterer          water.Waterer
+	WaterLevelSensor *sensing.WaterLevelSensor
 }
 
 type grpcServer struct {
@@ -63,5 +64,17 @@ func (s *grpcServer) GetRelativeMoisture(ctx context.Context, in *pb.GetRelative
 
 	return &pb.GetRelativeMoistureResponse{
 		Moisture: float32(moisture),
+	}, nil
+}
+
+func (s *grpcServer) GetWaterLevel(ctx context.Context, in *pb.GetWaterLevelRequest) (*pb.GetWaterLevelResponse, error) {
+	distance, err := s.config.WaterLevelSensor.Read()
+	if err != nil {
+		return nil, grpc.Errorf(codes.Internal, "sensor malfunction: %w", err)
+	}
+
+	return &pb.GetWaterLevelResponse{
+		Distance: float32(distance),
+		Liters:   float32(40 - distance),
 	}, nil
 }

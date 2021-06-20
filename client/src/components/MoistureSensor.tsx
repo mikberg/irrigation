@@ -19,6 +19,7 @@ export default function MoistureSensor({ channel }: { channel: number }) {
         setError(err)
         return;
       }
+      setError(null);
       setIsLoaded(true);
       setMoisture(resp.getMoisture());
     });

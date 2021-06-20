@@ -22,7 +22,7 @@ export default function WaterButton({ channel }: { channel: number }) {
 
     const req = new WaterRequest();
     req.setChannel(channel);
-    req.setDuration(2);
+    req.setDuration(10);
 
     irrService.water(req, {}, (err, resp) => {
       if (err) {
