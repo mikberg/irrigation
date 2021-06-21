@@ -1,2 +1,4 @@
 # build --experimental_convenience_symlinks=ignore
 test --test_output=errors
+
+try-import %workspace%/user.bazelrc
